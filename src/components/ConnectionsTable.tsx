@@ -71,7 +71,7 @@ const ConnectionsTable: FC<ConnectionsTableProps> = () => {
                   <ArrowTopRightOnSquareIcon className="absolute -right-4 -top-1 w-3" />
                 </a>
               </td>
-              <TableBodyColumn>{connection.incoming ? 'Inboud' : 'Outbound'}</TableBodyColumn>
+              <TableBodyColumn>{connection.incoming ? 'Inbound' : 'Outbound'}</TableBodyColumn>
               <TableBodyColumn>{formatBytes(connection.current_upload)}/s</TableBodyColumn>
               <TableBodyColumn>{formatBytes(connection.current_download)}/s</TableBodyColumn>
               <TableBodyColumn>{formatBytes(connection.send_count)}</TableBodyColumn>
