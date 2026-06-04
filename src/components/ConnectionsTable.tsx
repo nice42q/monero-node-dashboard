@@ -1,12 +1,11 @@
 import { ArrowTopRightOnSquareIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid';
 import { FC, useMemo, useState } from 'react';
-import Image from 'next/image';
-
 import { GetConnectionsConnection } from '../types/monero';
 import TableBody from './TableBody';
 import TableBodyColumn from './TableBodyColumn';
 import { formatBytes } from '../utils';
 import useMoneroStore from '../stores/monero';
+import CountryFlag from './CountryFlag';
 
 interface ConnectionsTableProps {}
 
@@ -94,27 +93,11 @@ const ConnectionsTable: FC<ConnectionsTableProps> = () => {
         {displayConnections.map((connection) => {
           const cleanIp = extractCleanIp(connection.address);
           
-          let countryCode: string | null = null;
-          if (typeof window === 'undefined') {
-            // eslint-disable-next-line
-            const geoip = require('geoip-lite');
-            const geo = geoip.lookup(cleanIp);
-            countryCode = geo?.country?.toLowerCase() || null;
-          }
-          
           return (
             <tr key={connection.address}>
               <td className="py-3.5 px-4 pl-6 text-sm font-medium text-primary">
                 <div className="flex items-center gap-2">
-                  {countryCode && (
-                    <Image 
-                      src={`https://flagcdn.com/16x12/${countryCode}.png`} 
-                      alt={countryCode} 
-                      width={16} 
-                      height={12}
-                      className="shadow-sm"
-                    />
-                  )}
+                  <CountryFlag ip={cleanIp} />
                   <a 
                     className="relative hover:underline inline-flex items-center gap-1 pr-4" 
                     href={`https://bgp.he.net/ip/${cleanIp}`} 
