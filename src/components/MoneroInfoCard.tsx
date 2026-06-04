@@ -27,8 +27,8 @@ const MoneroInfoCard: FC<MoneroInfoCardProps> = () => {
     <div>
       <CardTitle>Monero info</CardTitle>
       <Card>
-        <CardRow label="Difficulty">{formatNumber(difficulty)}</CardRow>
-        <CardRow label="Height">{formatNumber(info?.result?.height)}</CardRow>
+        <CardRow label="Difficulty">{difficulty}</CardRow>
+        <CardRow label="Block Height">{formatNumber(info?.result?.height)}</CardRow>
         <CardRow label="Target Height">{formatNumber(info?.result?.target_height)}</CardRow>
         <CardRow label="Network Hashrate">
           {difficulty ? (

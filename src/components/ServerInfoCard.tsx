@@ -37,7 +37,7 @@ const ServerInfoCard: FC<ServerInfoCardProps> = ({}) => {
           ) : info?.result?.busy_syncing ? (
             <span className="text-amber-500 font-medium dark:text-amber-400">Syncing...</span>
           ) : (
-            <span className="text-emerald-500 font-medium dark:text-emerald-400">Fully Synced</span>
+            <span className="text-emerald-500 font-medium dark:text-emerald-400">Synced</span>
           )}
         </CardRow>
 
