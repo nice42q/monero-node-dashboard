@@ -7,8 +7,20 @@ import useMoneroStore from '../stores/monero';
 
 interface ServerInfoCardProps {}
 
+const getUptimeString = (startTime: number) => {
+  if (!startTime) return '---';
+  const seconds = Math.floor(Date.now() / 1000) - startTime;
+  if (seconds < 0) return '---';
+  
+  const d = Math.floor(seconds / (3600 * 24));
+  const h = Math.floor((seconds % (3600 * 24)) / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+
+  return d > 0 ? `${d}d ${h}h` : `${h}h ${m}m`;
+};
+
 const ServerInfoCard: FC<ServerInfoCardProps> = ({}) => {
-  const { data: info, isLoading } = useMoneroStore((state) => state.info);
+  const { data: info } = useMoneroStore((state) => state.info);
 
   return (
     <div>
@@ -17,11 +29,12 @@ const ServerInfoCard: FC<ServerInfoCardProps> = ({}) => {
         <CardRow label="Version">{info?.result?.restricted ? <span className="text-slate-300 dark:text-slate-500">Restricted</span> : info?.result?.version}</CardRow>
         <CardRow label="Net-type">{info?.result?.nettype}</CardRow>
         <CardRow label="Update Available">{info?.result?.restricted ? <span className="text-slate-300 dark:text-slate-500">Restricted</span> : info?.result?.update_available ? 'Yes' : 'No'}</CardRow>
-        <CardRow label="Syncing" className="pb-3">
+        <CardRow label="Syncing">
           {info?.result?.restricted ? <span className="text-slate-300 dark:text-slate-500">Restricted</span> : info?.result?.busy_syncing ? 'Yes' : 'No'}
         </CardRow>
         <CardRow label="Database Size">{formatBytes(info?.result?.database_size ?? 0)}</CardRow>
         <CardRow label="Free Space">{info?.result?.restricted ? <span className="text-slate-300 dark:text-slate-500">Restricted</span> : formatBytes(info?.result?.free_space ?? 0)}</CardRow>
+        <CardRow label="Uptime">{info?.result?.start_time ? getUptimeString(info.result.start_time) : '---'}</CardRow>
       </Card>
     </div>
   );

@@ -1,5 +1,5 @@
 import { ArrowTopRightOnSquareIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid';
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 
 import { GetConnectionsConnection } from '../types/monero';
 import TableBody from './TableBody';
@@ -9,22 +9,56 @@ import useMoneroStore from '../stores/monero';
 
 interface ConnectionsTableProps {}
 
+const extractCleanIp = (address: string): string => {
+  if (!address) return '';
+  
+  if (address.includes('::ffff:')) {
+    const match = address.match(/::ffff:([0-9.]+)/);
+    if (match && match[1]) return match[1];
+  }
+  
+  if (address.startsWith('[')) {
+    const match = address.match(/\[(.*?)\]/);
+    if (match && match[1]) return match[1];
+  }
+  
+  if (address.includes('.')) {
+    return address.split(':')[0];
+  }
+  
+  return address;
+};
+
 const ConnectionsTable: FC<ConnectionsTableProps> = () => {
-  const { data: connections, isLoading } = useMoneroStore((state) => state.connections);
+  const { data: connections } = useMoneroStore((state) => state.connections);
+  const [sortConfig, setSortConfig] = useState<{ column: keyof GetConnectionsConnection; order: 'asc' | 'desc' }>({ 
+    column: 'send_count', 
+    order: 'desc' 
+  });
 
-  const [sortedConnections, setSortedConnections] = useState<GetConnectionsConnection[]>([]);
-  const [sortConfig, setSortConfig] = useState<{ column: keyof GetConnectionsConnection; order: 'asc' | 'desc' }>({ column: 'send_count', order: 'desc' });
-
-  useMemo(() => {
-    return sortedConnections.sort((a, b) => ((sortConfig.order == 'desc' ? a[sortConfig.column] > b[sortConfig.column] : a[sortConfig.column] < b[sortConfig.column]) ? -1 : 1));
-  }, [sortConfig, sortedConnections]);
-
-  useEffect(() => {
-    if (connections?.result) setSortedConnections(connections.result.connections);
-  }, [connections]);
+  const displayConnections = useMemo(() => {
+    if (!connections?.result?.connections) return [];
+    
+    const items = [...connections.result.connections];
+    return items.sort((a, b) => {
+      const valA = a[sortConfig.column];
+      const valB = b[sortConfig.column];
+      
+      if (valA === valB) return 0;
+      
+      if (sortConfig.order === 'desc') {
+        return valA > valB ? -1 : 1;
+      } else {
+        return valA < valB ? -1 : 1;
+      }
+    });
+  }, [connections, sortConfig]);
 
   const sortConnections = (column: keyof GetConnectionsConnection) => {
-    setSortConfig((_sortConfig) => ({ column, order: _sortConfig.column === column ? (_sortConfig.order == 'asc' ? 'desc' : 'asc') : 'desc' }));
+    setSortConfig((_sortConfig) => ({ 
+      column, 
+      order: _sortConfig.column === column ? (_sortConfig.order == 'asc' ? 'desc' : 'asc') : 'desc' 
+    }));
   };
 
   const getOrderIcon = (column: keyof GetConnectionsConnection) => {
@@ -62,13 +96,20 @@ const ConnectionsTable: FC<ConnectionsTableProps> = () => {
         </tr>
       </thead>
       <TableBody>
-        {sortedConnections &&
-          sortedConnections.map((connection) => (
-            <tr key={connection.host}>
+        {displayConnections.map((connection) => {
+          const cleanIp = extractCleanIp(connection.address);
+          
+          return (
+            <tr key={connection.address}>
               <td className="py-3.5 px-4 pl-6 text-sm font-medium text-primary">
-                <a className="relative hover:underline" href={`https://bgp.he.net/ip/${connection.ip}`} target="_blank" rel="noreferrer">
+                <a 
+                  className="relative hover:underline inline-flex items-center gap-1 pr-4" 
+                  href={`https://bgp.he.net/ip/${cleanIp}`} 
+                  target="_blank" 
+                  rel="noreferrer"
+                >
                   {connection.address}
-                  <ArrowTopRightOnSquareIcon className="absolute -right-4 -top-1 w-3" />
+                  <ArrowTopRightOnSquareIcon className="w-3 h-3 text-slate-400" />
                 </a>
               </td>
               <TableBodyColumn>{connection.incoming ? 'Inbound' : 'Outbound'}</TableBodyColumn>
@@ -77,7 +118,8 @@ const ConnectionsTable: FC<ConnectionsTableProps> = () => {
               <TableBodyColumn>{formatBytes(connection.send_count)}</TableBodyColumn>
               <TableBodyColumn>{formatBytes(connection.recv_count)}</TableBodyColumn>
             </tr>
-          ))}
+          );
+        })}
       </TableBody>
     </table>
   );
