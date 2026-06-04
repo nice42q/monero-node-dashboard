@@ -49,18 +49,18 @@ const ConnectionInfoCard: FC<ConnectionInfoCardProps> = ({}) => {
             info?.result?.outgoing_connections_count ?? '---'
           )}
         </CardRow>
+        <CardRow label="IPv4 Connections">
+          {connections?.result?.connections ? ipv4Count : '---'}
+        </CardRow>
+        <CardRow label="IPv6 Connections">
+          {connections?.result?.connections ? ipv6Count : '---'}
+        </CardRow>
         <CardRow label="RPC">
           {info?.result?.restricted ? (
             <span className="text-slate-300 dark:text-slate-500">Restricted</span>
           ) : (
             info?.result?.rpc_connections_count ?? '---'
           )}
-        </CardRow>
-        <CardRow label="IPv4 Connections">
-          {connections?.result?.connections ? ipv4Count : '---'}
-        </CardRow>
-        <CardRow label="IPv6 Connections">
-          {connections?.result?.connections ? ipv6Count : '---'}
         </CardRow>
       </Card>
     </div>
