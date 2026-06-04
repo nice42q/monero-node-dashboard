@@ -10,16 +10,15 @@ interface ConnectionInfoCardProps {}
 const ConnectionInfoCard: FC<ConnectionInfoCardProps> = ({}) => {
   const info = useMoneroStore((state) => state.info?.data);
   const connections = useMoneroStore((state) => state.connections?.data);
+  const netStats = useMoneroStore((state) => state.netStats?.data);
 
   const { ipv4Count, ipv6Count } = useMemo(() => {
     let ipv4 = 0;
     let ipv6 = 0;
-
     const connectionList = connections?.result?.connections;
     if (connectionList && Array.isArray(connectionList)) {
       connectionList.forEach((conn) => {
         const addr = conn?.address; 
-        
         if (addr && (addr.includes('::ffff:') || addr.startsWith('['))) {
           ipv6++;
         } else {
@@ -27,7 +26,6 @@ const ConnectionInfoCard: FC<ConnectionInfoCardProps> = ({}) => {
         }
       });
     }
-
     return { ipv4Count: ipv4, ipv6Count: ipv6 };
   }, [connections]);
 
@@ -70,8 +68,12 @@ const ConnectionInfoCard: FC<ConnectionInfoCardProps> = ({}) => {
         <CardRow label="IPv6 Connections">
           {connections?.result?.connections ? ipv6Count : '---'}
         </CardRow>
-        <CardRow label="Data Downloaded">{formatBytes(info?.result?.total_bytes_downloaded)}</CardRow>
-        <CardRow label="Data Uploaded">{formatBytes(info?.result?.total_bytes_uploaded)}</CardRow>
+        <CardRow label="Data Downloaded">
+          {netStats ? formatBytes(netStats.total_bytes_in) : '---'}
+        </CardRow>
+        <CardRow label="Data Uploaded">
+          {netStats ? formatBytes(netStats.total_bytes_out) : '---'}
+        </CardRow>
       </Card>
     </div>
   );

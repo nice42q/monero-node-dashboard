@@ -97,3 +97,13 @@ export interface GetConnectionsConnection {
   state: string;
   support_flags: number;
 }
+
+export interface GetNetStatsResponse {
+  start_time: number;
+  status: string;
+  total_bytes_in: number;
+  total_bytes_out: number;
+  total_packets_in: number;
+  total_packets_out: number;
+  untrusted: boolean;
+}

@@ -7,13 +7,16 @@ import { ThemeProvider } from 'next-themes';
 function MyApp({ Component, pageProps }: AppProps) {
   const { data: info, fetch: fetchInfo } = useMoneroStore((state) => state.info);
   const { data: connections, fetch: fetchConnections } = useMoneroStore((state) => state.connections);
+  const { data: netStats, fetch: fetchNetStats } = useMoneroStore((state) => state.netStats);
 
   useEffect(() => {
     if (!info) fetchInfo();
+    
     if (!connections && info?.result) fetchConnections();
+    
+    if (!netStats) fetchNetStats();
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [info, connections]);
+  }, [info, connections, netStats]);
 
   return (
     <ThemeProvider attribute="class">
