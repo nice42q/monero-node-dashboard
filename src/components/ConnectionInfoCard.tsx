@@ -7,15 +7,18 @@ import useMoneroStore from '../stores/monero';
 interface ConnectionInfoCardProps {}
 
 const ConnectionInfoCard: FC<ConnectionInfoCardProps> = ({}) => {
-  const { data: info } = useMoneroStore((state) => state.info);
-  const { data: connections } = useMoneroStore((state) => state.connections);
+  const infoData = useMoneroStore((state) => state.info.data);
+  const connectionsData = useMoneroStore((state) => state.connections.data);
+
+  const infoResult = infoData && 'result' in infoData ? infoData.result : null;
+  const connectionsResult = connectionsData && 'result' in connectionsData ? connectionsData.result : null;
 
   const { ipv4Count, ipv6Count } = useMemo(() => {
     let ipv4 = 0;
     let ipv6 = 0;
 
-    const connectionList = connections?.result?.connections;
-    if (connectionList && Array.isArray(connectionList)) {
+    const connectionList = connectionsResult?.connections;
+    if (Array.isArray(connectionList)) {
       connectionList.forEach((conn) => {
         const addr = conn?.address; 
         
@@ -23,28 +26,48 @@ const ConnectionInfoCard: FC<ConnectionInfoCardProps> = ({}) => {
           ipv6++;
         } else {
           ipv4++;
+          
         }
       });
     }
 
     return { ipv4Count: ipv4, ipv6Count: ipv6 };
-  }, [connections]);
+  }, [connectionsResult]);
 
   return (
     <div>
       <CardTitle>Connection info</CardTitle>
       <Card>
-        <CardRow label="Incoming">{info?.result?.restricted ? <span className="text-slate-300 dark:text-slate-500">Restricted</span> : info?.result?.incoming_connections_count}</CardRow>
-        <CardRow label="Outgoing">{info?.result?.restricted ? <span className="text-slate-300 dark:text-slate-500">Restricted</span> : info?.result?.outgoing_connections_count}</CardRow>
-        <CardRow label="RPC">{info?.result?.restricted ? <span className="text-slate-300 dark:text-slate-500">Restricted</span> : info?.result?.rpc_connections_count}</CardRow>
+        <CardRow label="Incoming">
+          {infoResult?.restricted ? (
+            <span className="text-slate-300 dark:text-slate-500">Restricted</span>
+          ) : (
+            infoResult?.incoming_connections_count ?? '---'
+          )}
+        </CardRow>
+        <CardRow label="Outgoing">
+          {infoResult?.restricted ? (
+            <span className="text-slate-300 dark:text-slate-500">Restricted</span>
+          ) : (
+            infoResult?.outgoing_connections_count ?? '---'
+          )}
+        </CardRow>
+        <CardRow label="RPC">
+          {infoResult?.restricted ? (
+            <span className="text-slate-300 dark:text-slate-500">Restricted</span>
+          ) : (
+            infoResult?.rpc_connections_count ?? '---'
+          )}
+        </CardRow>
         <CardRow label="IPv4 Connections">
-          {connections?.result?.connections ? ipv4Count : '---'}
+          {connectionsResult?.connections ? ipv4Count : '---'}
         </CardRow>
         <CardRow label="IPv6 Connections">
-          {connections?.result?.connections ? ipv6Count : '---'}
+          {connectionsResult?.connections ? ipv6Count : '---'}
         </CardRow>
       </Card>
     </div>
   );
 };
+
 export default ConnectionInfoCard;
