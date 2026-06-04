@@ -11,12 +11,9 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   useEffect(() => {
     if (!info) fetchInfo();
-    
     if (!connections && info?.result) fetchConnections();
-    
     if (!netStats) fetchNetStats();
-
-  }, [info, connections, netStats]);
+  }, [info, connections, netStats, fetchInfo, fetchConnections, fetchNetStats]);
 
   return (
     <ThemeProvider attribute="class">

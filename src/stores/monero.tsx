@@ -54,8 +54,12 @@ const useMoneroStore = create<MoneroState>((set, get) => ({
       set((state) => ({ netStats: { ...state.netStats, isLoading: true } }));
       try {
         const data = await get().client.getNetStats();
-        set((state) => ({ netStats: { ...state.netStats, data } }));
-      } catch (error) {}
+        if ('status' in data && data.status === 'OK') {
+           set((state) => ({ netStats: { ...state.netStats, data: data as GetNetStatsResponse } }));
+        }
+      } catch (error) {
+        console.error("Failed to fetch net stats", error);
+      }
       set((state) => ({ netStats: { ...state.netStats, isLoading: false } }));
     },
   },
