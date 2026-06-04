@@ -17,7 +17,9 @@ const ConnectionInfoCard: FC<ConnectionInfoCardProps> = ({}) => {
     const connectionList = connections?.result?.connections;
     if (connectionList && Array.isArray(connectionList)) {
       connectionList.forEach((conn) => {
-        if (conn.address.includes('::ffff:') || conn.address.startsWith('[')) {
+        const addr = conn?.address; 
+        
+        if (addr && (addr.includes('::ffff:') || addr.startsWith('['))) {
           ipv6++;
         } else {
           ipv4++;
