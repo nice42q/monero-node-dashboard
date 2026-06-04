@@ -1,6 +1,5 @@
 import { ArrowTopRightOnSquareIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid';
 import { FC, useMemo, useState } from 'react';
-import geoip from 'geoip-lite';
 
 import { GetConnectionsConnection } from '../types/monero';
 import TableBody from './TableBody';
@@ -91,16 +90,21 @@ const ConnectionsTable: FC<ConnectionsTableProps> = () => {
             {getOrderIcon('send_count')}
           </th>
           <th className="hidden select-none py-3.5 px-4 text-left text-sm font-medium text-slate-700 hover:cursor-pointer dark:text-white md:table-cell" onClick={() => sortConnections('recv_count')}>
-            Received
-            {getOrderIcon('recv_count')}
+            getOrderIcon('recv_count')
           </th>
         </tr>
       </thead>
       <TableBody>
         {displayConnections.map((connection) => {
           const cleanIp = extractCleanIp(connection.address);
-          const geo = geoip.lookup(cleanIp);
-          const countryCode = geo?.country?.toLowerCase();
+          
+          let countryCode: string | null = null;
+          if (typeof window === 'undefined') {
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const geoip = require('geoip-lite');
+            const geo = geoip.lookup(cleanIp);
+            countryCode = geo?.country?.toLowerCase() || null;
+          }
           
           return (
             <tr key={connection.address}>
