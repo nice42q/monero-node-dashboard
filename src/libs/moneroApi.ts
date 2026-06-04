@@ -17,9 +17,4 @@ export class MoneroApi {
     const res = await this._send('get_connections');
     return res.ok ? res.json() : Promise.reject();
   };
-
-  public getNetStats = async (): Promise<GetNetStatsResponse | ErrorResponce> => {
-    const res = await fetch(`/get_net_stats`, { method: 'GET' });
-    return res.ok ? res.json() : Promise.reject();
-  };
 }
