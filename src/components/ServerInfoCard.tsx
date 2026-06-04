@@ -29,9 +29,27 @@ const ServerInfoCard: FC<ServerInfoCardProps> = ({}) => {
         <CardRow label="Version">{info?.result?.restricted ? <span className="text-slate-300 dark:text-slate-500">Restricted</span> : info?.result?.version}</CardRow>
         <CardRow label="Net-type">{info?.result?.nettype}</CardRow>
         <CardRow label="Update Available">{info?.result?.restricted ? <span className="text-slate-300 dark:text-slate-500">Restricted</span> : info?.result?.update_available ? 'Yes' : 'No'}</CardRow>
-        <CardRow label="Syncing">
-          {info?.result?.restricted ? <span className="text-slate-300 dark:text-slate-500">Restricted</span> : info?.result?.busy_syncing ? 'Yes' : 'No'}
+        
+        <CardRow label="Status">
+          {info?.result?.restricted ? (
+            <span className="text-slate-300 dark:text-slate-500">Restricted</span>
+          ) : info?.result?.busy_syncing ? (
+            <span className="text-amber-500 font-medium dark:text-amber-400">Syncing...</span>
+          ) : (
+            <span className="text-emerald-500 font-medium dark:text-emerald-400">Fully Synced</span>
+          )}
         </CardRow>
+
+        <CardRow label="Blockchain">
+          {info?.result?.restricted ? (
+            <span className="text-slate-300 dark:text-slate-500">Restricted</span>
+          ) : info?.result?.pruning_seed ? (
+            <span className="text-blue-500 font-medium dark:text-blue-400">Pruned</span>
+          ) : (
+            'Full'
+          )}
+        </CardRow>
+        
         <CardRow label="Database Size">{formatBytes(info?.result?.database_size ?? 0)}</CardRow>
         <CardRow label="Free Space">{info?.result?.restricted ? <span className="text-slate-300 dark:text-slate-500">Restricted</span> : formatBytes(info?.result?.free_space ?? 0)}</CardRow>
         <CardRow label="Uptime">{info?.result?.start_time ? getUptimeString(info.result.start_time) : '---'}</CardRow>
