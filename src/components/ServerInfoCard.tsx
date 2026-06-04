@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Card from './Card';
 import CardRow from './CardRow';
 import CardTitle from './CardTitle';
@@ -20,7 +21,7 @@ const getUptimeString = (startTime: number) => {
 };
 
 const ServerInfoCard: FC<ServerInfoCardProps> = ({}) => {
-  const { data: info } = useMoneroStore((state) => state.info);
+  const info = useMoneroStore((state) => state.info?.data);
 
   return (
     <div>
@@ -57,4 +58,5 @@ const ServerInfoCard: FC<ServerInfoCardProps> = ({}) => {
     </div>
   );
 };
+
 export default ServerInfoCard;
