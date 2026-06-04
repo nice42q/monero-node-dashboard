@@ -31,6 +31,14 @@ const ConnectionInfoCard: FC<ConnectionInfoCardProps> = ({}) => {
     return { ipv4Count: ipv4, ipv6Count: ipv6 };
   }, [connections]);
 
+  const formatBytes = (bytes: number | undefined): string => {
+    if (bytes === undefined || bytes === null || bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
   return (
     <div>
       <CardTitle>Connection info</CardTitle>
