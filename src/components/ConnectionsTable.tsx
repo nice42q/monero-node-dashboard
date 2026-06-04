@@ -1,5 +1,6 @@
 import { ArrowTopRightOnSquareIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid';
 import { FC, useMemo, useState } from 'react';
+import Image from 'next/image';
 
 import { GetConnectionsConnection } from '../types/monero';
 import TableBody from './TableBody';
@@ -57,12 +58,12 @@ const ConnectionsTable: FC<ConnectionsTableProps> = () => {
   const sortConnections = (column: keyof GetConnectionsConnection) => {
     setSortConfig((_sortConfig) => ({ 
       column, 
-      order: _sortConfig.column === column ? (_sortConfig.order == 'asc' ? 'desc' : 'asc') : 'desc' 
+      order: _sortConfig.column === column ? (_sortConfig.order === 'asc' ? 'desc' : 'asc') : 'desc' 
     }));
   };
 
   const getOrderIcon = (column: keyof GetConnectionsConnection) => {
-    return column == sortConfig.column && (sortConfig.order == 'desc' ? <ChevronDownIcon className="ml-1 inline w-4" /> : <ChevronUpIcon className="ml-1 inline w-4" />);
+    return column === sortConfig.column && (sortConfig.order === 'desc' ? <ChevronDownIcon className="ml-1 inline w-4" /> : <ChevronUpIcon className="ml-1 inline w-4" />);
   };
 
   return (
@@ -70,27 +71,22 @@ const ConnectionsTable: FC<ConnectionsTableProps> = () => {
       <thead className="bg-slate-50 dark:bg-gray-900">
         <tr>
           <th className="select-none py-3.5 px-4 pl-6 text-left text-sm font-medium text-slate-700 hover:cursor-pointer dark:text-white" onClick={() => sortConnections('ip')}>
-            Address
-            {getOrderIcon('ip')}
+            Address {getOrderIcon('ip')}
           </th>
           <th className="hidden select-none py-3.5 px-4 text-left text-sm font-medium text-slate-700 hover:cursor-pointer dark:text-white sm:table-cell" onClick={() => sortConnections('incoming')}>
-            Direction
-            {getOrderIcon('incoming')}
+            Direction {getOrderIcon('incoming')}
           </th>
           <th className="hidden select-none py-3.5 px-4 text-left text-sm font-medium text-slate-700 hover:cursor-pointer dark:text-white md:table-cell" onClick={() => sortConnections('current_upload')}>
-            Upload
-            {getOrderIcon('current_upload')}
+            Upload {getOrderIcon('current_upload')}
           </th>
           <th className="hidden select-none py-3.5 px-4 text-left text-sm font-medium text-slate-700 hover:cursor-pointer dark:text-white md:table-cell" onClick={() => sortConnections('current_download')}>
-            Download
-            {getOrderIcon('current_download')}
+            Download {getOrderIcon('current_download')}
           </th>
           <th className="hidden select-none py-3.5 px-4 text-left text-sm font-medium text-slate-700 hover:cursor-pointer dark:text-white md:table-cell" onClick={() => sortConnections('send_count')}>
-            Sent
-            {getOrderIcon('send_count')}
+            Sent {getOrderIcon('send_count')}
           </th>
           <th className="hidden select-none py-3.5 px-4 text-left text-sm font-medium text-slate-700 hover:cursor-pointer dark:text-white md:table-cell" onClick={() => sortConnections('recv_count')}>
-            getOrderIcon('recv_count')
+            Received {getOrderIcon('recv_count')}
           </th>
         </tr>
       </thead>
@@ -100,7 +96,7 @@ const ConnectionsTable: FC<ConnectionsTableProps> = () => {
           
           let countryCode: string | null = null;
           if (typeof window === 'undefined') {
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            // eslint-disable-next-line
             const geoip = require('geoip-lite');
             const geo = geoip.lookup(cleanIp);
             countryCode = geo?.country?.toLowerCase() || null;
@@ -111,10 +107,12 @@ const ConnectionsTable: FC<ConnectionsTableProps> = () => {
               <td className="py-3.5 px-4 pl-6 text-sm font-medium text-primary">
                 <div className="flex items-center gap-2">
                   {countryCode && (
-                    <img 
+                    <Image 
                       src={`https://flagcdn.com/16x12/${countryCode}.png`} 
                       alt={countryCode} 
-                      className="w-4 h-3 shadow-sm"
+                      width={16} 
+                      height={12}
+                      className="shadow-sm"
                     />
                   )}
                   <a 
