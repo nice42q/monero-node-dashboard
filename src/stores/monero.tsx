@@ -1,6 +1,6 @@
 import create from 'zustand';
 import { MoneroApi } from '../libs/moneroApi';
-import { ErrorResponce, GetConnectionsResponse, GetInfoResponse, GetNetStatsResponse, ResultResponce } from '../types/monero';
+import { ErrorResponce, GetConnectionsResponse, GetInfoResponse, ResultResponce } from '../types/monero';
 
 interface MoneroState {
   client: MoneroApi;
