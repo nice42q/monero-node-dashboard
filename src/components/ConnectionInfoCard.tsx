@@ -35,6 +35,13 @@ const ConnectionInfoCard: FC<ConnectionInfoCardProps> = ({}) => {
     <div>
       <CardTitle>Connection info</CardTitle>
       <Card>
+        <CardRow label="RPC">
+          {info?.result?.restricted ? (
+            <span className="text-slate-300 dark:text-slate-500">Restricted</span>
+          ) : (
+            info?.result?.rpc_connections_count ?? '---'
+          )}
+        </CardRow>
         <CardRow label="Incoming">
           {info?.result?.restricted ? (
             <span className="text-slate-300 dark:text-slate-500">Restricted</span>
@@ -55,13 +62,8 @@ const ConnectionInfoCard: FC<ConnectionInfoCardProps> = ({}) => {
         <CardRow label="IPv6 Connections">
           {connections?.result?.connections ? ipv6Count : '---'}
         </CardRow>
-        <CardRow label="RPC">
-          {info?.result?.restricted ? (
-            <span className="text-slate-300 dark:text-slate-500">Restricted</span>
-          ) : (
-            info?.result?.rpc_connections_count ?? '---'
-          )}
-        </CardRow>
+        <CardRow label="Data Downloaded">{formatBytes(info?.result?.total_bytes_downloaded)}</CardRow>
+        <CardRow label="Data Uploaded">{formatBytes(info?.result?.total_bytes_uploaded)}</CardRow>
       </Card>
     </div>
   );

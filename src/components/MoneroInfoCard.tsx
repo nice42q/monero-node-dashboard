@@ -49,8 +49,6 @@ const MoneroInfoCard: FC<MoneroInfoCardProps> = () => {
           )}
         </CardRow>
         <CardRow label="Unconfirmed TXs">{info?.result?.tx_pool_size !== undefined ? `${formatNumber(info.result.tx_pool_size)}` : '---'}</CardRow>
-        <CardRow label="Data Downloaded">{formatBytes(info?.result?.total_bytes_downloaded)}</CardRow>
-        <CardRow label="Data Uploaded">{formatBytes(info?.result?.total_bytes_uploaded)}</CardRow>
       </Card>
     </div>
   );
