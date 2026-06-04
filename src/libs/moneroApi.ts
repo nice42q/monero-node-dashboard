@@ -1,4 +1,4 @@
-import { ErrorResponce, GetConnectionsResponse, GetInfoResponse, ResultResponce, GetNetStatsResponse } from '../types/monero';
+import { ErrorResponce, GetConnectionsResponse, GetInfoResponse, ResultResponce } from '../types/monero';
 
 export class MoneroApi {
   private _send = (method: string): Promise<Response> => {
