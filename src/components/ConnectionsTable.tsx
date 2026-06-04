@@ -1,5 +1,6 @@
 import { ArrowTopRightOnSquareIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid';
 import { FC, useMemo, useState } from 'react';
+import geoip from 'geoip-lite';
 
 import { GetConnectionsConnection } from '../types/monero';
 import TableBody from './TableBody';
@@ -98,19 +99,30 @@ const ConnectionsTable: FC<ConnectionsTableProps> = () => {
       <TableBody>
         {displayConnections.map((connection) => {
           const cleanIp = extractCleanIp(connection.address);
+          const geo = geoip.lookup(cleanIp);
+          const countryCode = geo?.country?.toLowerCase();
           
           return (
             <tr key={connection.address}>
               <td className="py-3.5 px-4 pl-6 text-sm font-medium text-primary">
-                <a 
-                  className="relative hover:underline inline-flex items-center gap-1 pr-4" 
-                  href={`https://bgp.he.net/ip/${cleanIp}`} 
-                  target="_blank" 
-                  rel="noreferrer"
-                >
-                  {connection.address}
-                  <ArrowTopRightOnSquareIcon className="w-3 h-3 text-slate-400" />
-                </a>
+                <div className="flex items-center gap-2">
+                  {countryCode && (
+                    <img 
+                      src={`https://flagcdn.com/16x12/${countryCode}.png`} 
+                      alt={countryCode} 
+                      className="w-4 h-3 shadow-sm"
+                    />
+                  )}
+                  <a 
+                    className="relative hover:underline inline-flex items-center gap-1 pr-4" 
+                    href={`https://bgp.he.net/ip/${cleanIp}`} 
+                    target="_blank" 
+                    rel="noreferrer"
+                  >
+                    {connection.address}
+                    <ArrowTopRightOnSquareIcon className="w-3 h-3 text-slate-400" />
+                  </a>
+                </div>
               </td>
               <TableBodyColumn>{connection.incoming ? 'Inbound' : 'Outbound'}</TableBodyColumn>
               <TableBodyColumn>{formatBytes(connection.current_upload)}/s</TableBodyColumn>
